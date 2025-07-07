@@ -2,7 +2,7 @@ package mongodb
 
 import (
 	"context"
-	"github.com/ningblue/go-lib/convert"
+	"lib/convert"
 
 	"encoding/json"
 	"errors"

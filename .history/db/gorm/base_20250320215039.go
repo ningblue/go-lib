@@ -1,9 +1,8 @@
 package gorm
 
 import (
+	"lib/db/objectID"
 	"time"
-
-	"github.com/ningblue/go-lib/db/objectID"
 
 	"gorm.io/gorm"
 )

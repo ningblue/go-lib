@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"golang.org/x/exp/constraints"
-	"github.com/ningblue/go-lib/random"
+	"lib/random"
 )
 
 // Create a static variable to store the hash table.

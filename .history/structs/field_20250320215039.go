@@ -1,7 +1,7 @@
 package structs
 
 import (
-	"github.com/ningblue/go-lib/pointer"
+	"lib/pointer"
 	"reflect"
 )
 

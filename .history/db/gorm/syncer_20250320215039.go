@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gorm.io/gorm"
-	libUtils "github.com/ningblue/go-lib/utils"
+	libUtils "lib/utils"
 )
 
 type ResourceSyncer[T any] struct {
