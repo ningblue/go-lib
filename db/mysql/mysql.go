@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	mySqlDsn = "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local"
+	mySqlDsn = "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=UTC"
 )
 
 type MysqlConfig struct {
