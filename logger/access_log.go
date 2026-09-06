@@ -2,71 +2,29 @@ package logger
 
 import (
 	"context"
+	"time"
+
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"os"
-	"path"
-	"time"
 )
 
-// RequestIDHeaderValue value for the request id header
-const RequestIDHeaderValue = "X-Request-ID"
-
-// LoggerMiddleware middleware for logging incoming requests
-func loggerMiddleware(level string) app.HandlerFunc {
+// AccessLog 返回 hertz 访问日志中间件：结构化输出每个请求的
+// method/path/status/latency/client_ip/user_agent。
+//
+// 约定：
+//   - 输出通道与级别由全局统一 logger 决定（先 hlog.SetLogger 设定 go-lib logger），
+//     本中间件不单独建文件/目录；
+//   - trace_id/span_id 由统一 logger 从 ctx 自动注入（enableTrace 时），
+//     因此本中间件应挂在 tracing 中间件之内（后注册）。
+func AccessLog() app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
 		start := time.Now()
-		// 可定制的输出目录。
-		logFilePath := "./logs/"
-		if err := os.MkdirAll(logFilePath, 0o777); err != nil {
-			hlog.Error("Failed to create log directory", zap.Error(err))
-			return
-		}
-		// 将文件名设置为日期
-		logFileName := "access.log"
-		fileName := path.Join(logFilePath, logFileName)
-		if _, err := os.Stat(fileName); os.IsNotExist(err) {
-			if _, err := os.Create(fileName); err != nil {
-				hlog.Error("Failed to create log file", zap.Error(err))
-				return
-			}
-		}
-		dynamicLevel, err := zap.ParseAtomicLevel(level)
-		if err != nil {
-			hlog.Error("parse log level error", err)
-			return
-		}
-
-		file := zapcore.NewCore(
-			zapcore.NewJSONEncoder(humanEncoderConfig()),
-			zapcore.AddSync(getWriteSyncer(fileName)),
-			dynamicLevel,
-		)
-		logger := zap.New(file)
-		c.Set("logger", logger)
-		if reqId, ok := ctx.Value(RequestIDHeaderValue).(string); ok {
-			//logger = logger.With(zap.String("request_id", reqId))
-			logger.With(zap.String("request_id", reqId))
-		}
-		defer func() {
-			stop := time.Now()
-			logger.Info("request processed",
-				zap.String("datetime", time.Now().Format("2006-01-02 15:04:05")),
-				zap.String("remote_ip", c.ClientIP()),
-				zap.String("method", string(c.Method())),
-				zap.String("path", string(c.Path())),
-				zap.Int("status", c.Response.StatusCode()),
-				zap.Duration("latency", stop.Sub(start)),
-				zap.String("latency_human", stop.Sub(start).String()),
-				zap.String("user_agent", string(c.UserAgent())),
-			)
-		}()
 		c.Next(ctx)
+		hlog.CtxInfof(ctx, "access %s %s status=%d latency=%s ip=%s ua=%q",
+			string(c.Method()), string(c.Path()),
+			c.Response.StatusCode(),
+			time.Since(start).Round(time.Millisecond).String(),
+			c.ClientIP(), string(c.UserAgent()),
+		)
 	}
-}
-
-func InitAccessLogger(level string) app.HandlerFunc {
-	return loggerMiddleware(level)
 }

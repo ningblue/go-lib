@@ -32,6 +32,10 @@ log := logger.NewLogger()
 log.Info("Hello World")
 ```
 
+- `logger.InitConsoleLogger / InitLogger`：控制台/文件输出，enableTrace 后 Ctx 系方法自动注入 trace_id/span_id
+- `logger.AccessLog()`：hertz 访问日志中间件（走统一 logger，trace 感知，不单独落文件）
+- `logger.SetKitexLogger(lg)`：把统一 logger 安装为 kitex klog 全局实现（hertz+kitex 同通道）
+
 ### 🔐 cryptor - 加密工具
 
 提供常用的加密解密功能。
