@@ -67,27 +67,37 @@ func Custom(c *app.RequestContext, code int, message string, data interface{}) {
 
 // BadRequest 响应错误请求消息
 func BadRequest(c *app.RequestContext, message string) {
-	Error(c, consts.StatusBadRequest, consts.StatusMessage(consts.StatusBadRequest)+": "+message)
+	ErrorWithCode(c, consts.StatusBadRequest, 40000, message)
 }
 
 // Unauthorized 响应未授权消息
 func Unauthorized(c *app.RequestContext, message string) {
-	Error(c, consts.StatusUnauthorized, consts.StatusMessage(consts.StatusUnauthorized)+": "+message)
+	ErrorWithCode(c, consts.StatusUnauthorized, 40100, message)
 }
 
 // Forbidden 响应禁止访问消息
 func Forbidden(c *app.RequestContext, message string) {
-	Error(c, consts.StatusForbidden, consts.StatusMessage(consts.StatusForbidden)+": "+message)
+	ErrorWithCode(c, consts.StatusForbidden, 40300, message)
 }
 
 // NotFound 响应资源未找到消息
 func NotFound(c *app.RequestContext, message string) {
-	Error(c, consts.StatusNotFound, consts.StatusMessage(consts.StatusNotFound)+": "+message)
+	ErrorWithCode(c, consts.StatusNotFound, 40400, message)
+}
+
+// Conflict 响应冲突消息（业务码 40900）
+func Conflict(c *app.RequestContext, message string) {
+	ErrorWithCode(c, consts.StatusConflict, 40900, message)
+}
+
+// UpstreamUnavailable 响应上游暂不可用消息（503 / 业务码 50300）
+func UpstreamUnavailable(c *app.RequestContext, message string) {
+	ErrorWithCode(c, consts.StatusServiceUnavailable, 50300, message)
 }
 
 // InternalServerError 响应服务器内部错误消息
 func InternalServerError(c *app.RequestContext, message string) {
-	Error(c, consts.StatusInternalServerError, consts.StatusMessage(consts.StatusInternalServerError)+": "+message)
+	ErrorWithCode(c, consts.StatusInternalServerError, 50000, message)
 }
 
 var (
@@ -193,3 +203,4 @@ func GetUserRoleName(c *app.RequestContext) string {
 	}
 	return ""
 }
+
