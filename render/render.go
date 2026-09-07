@@ -48,6 +48,14 @@ func Error(c *app.RequestContext, code int, message string) {
 	})
 }
 
+// ErrorWithCode 业务码与 HTTP 状态分离：body.code 为业务错误码（如 40900），HTTP 状态为其分段（409）。
+func ErrorWithCode(c *app.RequestContext, httpStatus, bizCode int, message string) {
+	c.JSON(httpStatus, RespJsonData{
+		Code:    bizCode,
+		Message: message,
+	})
+}
+
 // Custom 响应自定义消息
 func Custom(c *app.RequestContext, code int, message string, data interface{}) {
 	c.JSON(code, RespJsonData{
