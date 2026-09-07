@@ -21,8 +21,6 @@ type RespListData struct {
 	List     interface{} `json:"list"`
 }
 
-const CodeOK = 0
-
 // Success 响应成功消息
 func Success(c *app.RequestContext) {
 	c.JSON(consts.StatusOK, RespJsonData{
