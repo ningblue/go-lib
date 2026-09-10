@@ -33,16 +33,16 @@ func SetOperator(c *app.RequestContext, op Operator) {
 	c.Set(ctxKeyRole, op.Role)
 }
 
-// OperatorFrom 读取请求上下文中的身份；未认证时返回 false。
+// OperatorFrom 读取请求上下文中的身份；未认证时返回 false（以 UserID 为身份存在判据）。
 func OperatorFrom(c *app.RequestContext) (Operator, bool) {
-	uid := c.GetString(ctxKeyUsername)
+	uid := c.GetString(ctxKeyUserID)
 	if uid == "" {
 		return Operator{}, false
 	}
 	return Operator{
-		UserID:   c.GetString(ctxKeyUserID),
+		UserID:   uid,
 		UserKey:  c.GetString(ctxKeyUserKey),
-		Username: uid,
+		Username: c.GetString(ctxKeyUsername),
 		TenantID: c.GetString(ctxKeyTenantID),
 		Role:     c.GetString(ctxKeyRole),
 	}, true

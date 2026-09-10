@@ -69,6 +69,13 @@ type UUIDBaseModel struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// UUIDAppendOnlyModel 只增日志基座：UUID 主键 + 仅 created_at，无 updated_at/软删。
+// 适用于审计/流水/事件类"写入后永不修改"的表（这类表建表时不含 updated_at）。
+type UUIDAppendOnlyModel struct {
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 // UUIDSoftDeleteModel UUID 主键 + 软删基座。
 // 配合部分唯一索引（UNIQUE ... WHERE deleted_at IS NULL）实现"软删后同名可重建"语义。
 type UUIDSoftDeleteModel struct {
