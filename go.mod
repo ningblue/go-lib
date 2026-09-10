@@ -7,6 +7,7 @@ require (
 	github.com/cloudwego/kitex v0.16.3
 	github.com/duke-git/lancet/v2 v2.3.7
 	github.com/getsentry/sentry-go v0.34.0
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/uuid v1.6.0
 	github.com/redis/go-redis/v9 v9.11.0
 	github.com/stretchr/testify v1.12.1
